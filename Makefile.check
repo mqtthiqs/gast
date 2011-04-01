@@ -1,0 +1,5 @@
+# -*- Makefile -*-
+
+check-clean:
+	-rm -rf tests/*
+check:

@@ -1,0 +1,12 @@
+<gast.byte> : pkg_sexplib, pkg_camlp4.lib, pkg_camlp4.parsers
+<gast_init.byte> : pkg_sexplib, pkg_camlp4.lib, pkg_camlp4.parsers
+
+<sexp.ml> : pkg_sexplib
+<gast.ml> : pkg_sexplib
+
+<parse_file.ml> : pkg_camlp4, pkg_camlp4.parsers
+<caml_ast.ml> : pkg_camlp4, syntax_camlp4o, pkg_sexplib.syntax
+
+
+<*.ml> : annot
+
