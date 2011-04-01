@@ -5,6 +5,10 @@ module Loc = struct
   type tuple = string * int * int * int * int * int * int * bool with sexp
   let sexp_of_t loc = sexp_of_tuple (Loc.to_tuple loc)
   let t_of_sexp sexp = Loc.of_tuple (tuple_of_sexp sexp)
+
+  let sexp_of_t loc = Sexplib.Sexp.List[]
+  let t_of_sexp sexp = Loc.ghost
+
 end
 
 type loc = Loc.t
