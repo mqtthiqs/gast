@@ -3,7 +3,7 @@ BTARGET  = $(TARGET).byte
 OTARGET  = $(TARGET).native
 BLTARGET = $(TARGET).cma
 BNTARGET = $(TARGET).cmxa
-STARGET  = $(OTARGET)
+STARGET  = $(BTARGET)
 
 #########################
 ## Tools configuration ##

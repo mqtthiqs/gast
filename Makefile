@@ -3,7 +3,7 @@
 ###########################
 
 VERSION  = 0.1
-TARGET   = parse_file
+TARGET   = gast
 PACKAGE  = $(TARGET)-$(VERSION)
 
 include Makefile.generic
