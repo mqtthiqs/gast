@@ -22,5 +22,5 @@ let parse_interf f : Caml_ast.str_item =
   close_in ic;
   Obj.magic res
 
-let print_implem ast = Caml.print_implem (Obj.magic ast)
+let print_implem ast output_file = Caml.print_implem ~output_file (Obj.magic ast)
 

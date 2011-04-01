@@ -9,11 +9,11 @@ let astify f =
   Printf.printf "Saving sexp in %s.\n" dirname;
   Sexp.to_dir dirname sexp
 
-let ppify f =
+let ppify () =
   let sexp = Sexp.of_dir dirname in
   Printf.printf "Retyping sexp.\n";
   let ast = Caml_ast.str_item_of_sexp sexp in
-  Parse_file.print_implem ast
+  Parse_file.print_implem ast filename
 
 (* Main: *)
 
@@ -28,6 +28,7 @@ let _ =
 
   match command with
     | "init" ->
+      print_string "coucou";
       begin
 	try Unix.mkdir dirname 0o755
 	with Unix.Unix_error (e,_,_) ->
@@ -51,7 +52,11 @@ let _ =
       end
 
     | _ ->
-      ignore(Unix.system "");
+      Printf.printf "Removing old repository.\n";
+      flush_all();
+      Sexp.in_dir_abs dirname
+	(fun () -> ignore(Unix.system "rm -r *"));
       astify filename;
-      exec "git" Sys.argv;
-      ppify filename;
+      Sexp.in_dir_abs dirname
+	(fun () -> ignore(Unix.system "git add ."); exec "git" Sys.argv;);
+      ppify ();
