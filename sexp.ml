@@ -35,6 +35,7 @@ let to_dir d e =
     let ch = open_out_gen [Open_wronly;Open_creat] 0o644 "a" in
     output_string ch s;
     close_out ch
+  | List [] -> close_out (open_out ".e")
   | List l ->
     list_fold_left_i (fun i () e ->
       let d = string_of_int i in
