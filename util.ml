@@ -25,7 +25,9 @@ let fold_dir (f : string -> 'a -> 'a) (acc : 'a) (d : string) =
       else aux acc
     with End_of_file -> acc
   in
-  aux acc
+  let res = aux acc in
+  Unix.closedir h;
+  res
 
 let in_dir d f =
   Unix.chdir d;
@@ -45,9 +47,7 @@ let rec rm_r f =
   try Unix.unlink f
   with Unix.Unix_error (Unix.EISDIR,_,_) ->
     in_dir f (fun () ->
-      let h = Unix.opendir "." in
       fold_dir (fun f () -> rm_r f) () ".";
-      Unix.closedir h
     ); Unix.rmdir f
 
 let rec rmdirs i =
