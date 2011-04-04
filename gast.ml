@@ -35,11 +35,13 @@ let _ =
     with Unix.Unix_error (e,_,_) -> ()
   end;
 
-  Printf.printf "Astifying.\n%!";
   astify filename;
-  Printf.printf "Calling git.\n%!";
+
   Sexp.in_dir_abs dirname
     (fun () ->
+      Printf.printf "Calling git add . && git add -u.\n%!";
       system "git add . && git add -u";
+      Printf.printf "Calling git [your arguments].\n%!";
       exec "git" Sys.argv);
+
   ppify ();

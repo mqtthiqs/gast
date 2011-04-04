@@ -17,9 +17,9 @@ let input_file ch =
   in Buffer.contents (aux ())
 
 let in_dir d f =
-  (try Unix.chdir d  with _ -> print_string d; assert false);
+  Unix.chdir d;
   let r = f() in
-  (try Unix.chdir ".."  with _ -> assert false);
+  Unix.chdir "..";
   r
 
 let in_dir_abs d f =
@@ -30,14 +30,19 @@ let in_dir_abs d f =
   r
 
 let rec rm_r f =
+  (* Printf.printf "rm_r %s in %s\n" f (Unix.getcwd()); *)
   try Unix.unlink f
   with Unix.Unix_error (Unix.EISDIR,_,_) ->
-    (try(Unix.chdir f) with _ -> assert false);
-    let h = Unix.opendir f in
-    let rec aux () =
-      try rm_r (Unix.readdir h)
-      with Unix.Unix_error _ -> ()
-    in aux (); Unix.closedir h
+    in_dir f (fun () ->
+      let h = Unix.opendir "." in
+      let rec aux () =
+	try
+	  let f = Unix.readdir h in
+	  (* Printf.printf "aux %s in %s\n" f (Unix.getcwd()); *)
+	  if f <> "." && f <> ".." then (rm_r f; aux ()) else aux ()
+	with End_of_file -> ()
+      in aux (); Unix.closedir h
+    ); Unix.rmdir f
 
 let rec rmdirs i =
   (* Printf.printf "rmdirs %d in %s\n%!" i (Unix.getcwd()); *)
@@ -63,7 +68,7 @@ let to_dir d e =
       Unix.unlink "a"
     with Unix.Unix_error _ ->
       try Unix.unlink ".e" with Unix.Unix_error _ ->
-	(* rmdirs i *) ignore i
+	rmdirs i
   in
   in_dir d (fun () -> aux e)
 
@@ -74,11 +79,11 @@ let of_dir d : t =
     with Sys_error _ ->
       List(list 0)
   and list i =
-  try
-    let d = in_dir (string_of_int i) dir in
-    let ds = list (i+1) in
-    d :: ds
-  with Unix.Unix_error _ -> []
+    try
+      let d = in_dir (string_of_int i) dir in
+      let ds = list (i+1) in
+      d :: ds
+    with Unix.Unix_error _ -> []
   and atom () : string =
     let ch = open_in "a" in
     let s = input_file ch in
